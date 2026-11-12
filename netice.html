@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Nəticələr — Gender Party</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f7efe4;--cream:#fbf6ee;--caramel:#c49a6c;--brown:#6b4f36;--gold:#b8935a;--blue:#8fb1d1;--rose:#e89aa8}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Cormorant Garamond',serif;color:var(--brown);background:var(--bg);min-height:100vh;padding:28px 16px 40px}
+  .wrap{max-width:520px;margin:0 auto}
+  .label{font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:var(--caramel);text-align:center}
+  h1{font-weight:500;font-size:34px;text-align:center;margin:6px 0 22px}
+  h2{font-weight:500;font-size:26px;margin-bottom:12px;text-align:center}
+  .card{background:var(--cream);border:1px solid #ead9c0;border-radius:22px;padding:22px 18px;margin-bottom:18px;box-shadow:0 6px 24px rgba(107,79,54,.07)}
+  input{width:100%;padding:13px 16px;border-radius:14px;border:1.5px solid #e3cfb1;background:#fff;font:inherit;font-size:20px;color:var(--brown);text-align:center;letter-spacing:.3em}
+  input:focus{outline:none;border-color:var(--caramel)}
+  button{margin-top:14px;width:100%;padding:13px;border:none;border-radius:999px;background:var(--caramel);color:#fff;font-family:'Montserrat',sans-serif;font-size:13px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
+  button.ghost{background:transparent;color:var(--caramel);border:1.5px solid var(--caramel)}
+  #err{margin-top:10px;text-align:center;font-size:17px;color:#b5545c;min-height:20px}
+  .total{text-align:center;font-size:18px;margin-bottom:16px;font-style:italic}
+  .bar{margin-bottom:14px}
+  .bar .top{display:flex;justify-content:space-between;font-size:20px;margin-bottom:6px}
+  .bar .track{height:16px;border-radius:999px;background:#efe3d1;overflow:hidden}
+  .bar .fill{height:100%;width:0;border-radius:999px;transition:width 1s ease}
+  .bar.girl .fill{background:var(--rose)} .bar.boy .fill{background:var(--blue)}
+  ul{list-style:none}
+  li{padding:10px 2px;border-bottom:1px dashed #e3cfb1;font-size:19px}
+  li:last-child{border-bottom:none}
+  .row{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+  .tag{font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:.1em;padding:3px 10px;border-radius:999px;white-space:nowrap}
+  .tag.girl{background:#f6e6e5;color:#b0606b} .tag.boy{background:#e3ecf2;color:#4f7491}
+  .msg .who{font-weight:600}
+  .msg .when,.when{font-family:'Montserrat',sans-serif;font-size:11px;opacity:.6}
+  .msg p{margin-top:4px;white-space:pre-wrap;word-wrap:break-word}
+  .empty{text-align:center;font-style:italic;opacity:.7;font-size:18px}
+  #panel{display:none}
+  footer{text-align:center;margin-top:26px}
+  .insta{display:inline-flex;width:42px;height:42px;border-radius:50%;align-items:center;justify-content:center;color:var(--caramel);border:1.5px solid var(--caramel)}
+  .insta svg{width:22px;height:22px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="label">Yalnız ev sahibi üçün</div>
+  <h1>Səsvermə nəticələri</h1>
+
+  <div class="card" id="login">
+    <input id="pin" type="password" inputmode="numeric" maxlength="12" placeholder="PIN">
+    <button id="go" type="button">Daxil ol</button>
+    <div id="err"></div>
+  </div>
+
+  <div id="panel">
+    <div class="card">
+      <h2>Kim gəlir?</h2>
+      <div class="total" id="total"></div>
+      <div class="bar girl"><div class="top"><span>Team Qız 💗</span><b id="nGirl">0</b></div><div class="track"><div class="fill" id="fGirl"></div></div></div>
+      <div class="bar boy"><div class="top"><span>Team Oğlan 💙</span><b id="nBoy">0</b></div><div class="track"><div class="fill" id="fBoy"></div></div></div>
+    </div>
+    <div class="card">
+      <h2>Kim nə dedi?</h2>
+      <ul id="votes"></ul>
+    </div>
+    <div class="card">
+      <h2>Qonaq dəftəri</h2>
+      <ul id="msgs"></ul>
+    </div>
+    <button class="ghost" id="refresh" type="button">Yenilə</button>
+  </div>
+
+  <footer>
+    <a class="insta" href="https://www.instagram.com/devetify?vrfl=MTlnbnp5NzNzdHkweA==" target="_blank" rel="noopener" aria-label="Devetify Instagram">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg>
+    </a>
+  </footer>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://fknrihzgzgkvtpyipjlc.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_lOu3l5mgxve967mRUC9T4Q_gMHGZDMz';
+  const EVENT_ID = 'gender-party';
+
+  const $=id=>document.getElementById(id);
+  const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmt=t=>{try{return new Date(t).toLocaleString('az-AZ',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Baku'})}catch(e){return ''}};
+
+  async function rpc(fn,pin){
+    const r=await fetch(SUPABASE_URL+'/rest/v1/rpc/'+fn,{method:'POST',
+      headers:{'Content-Type':'application/json',apikey:SUPABASE_ANON_KEY},
+      body:JSON.stringify({p_event:EVENT_ID,p_pin:pin})});
+    const txt=await r.text();
+    if(!r.ok){const e=new Error(txt);e.pin=txt.includes('wrong pin');throw e;}
+    return JSON.parse(txt);
+  }
+
+  async function load(pin){
+    $('err').textContent='Yüklənir…';
+    try{
+      const [res,votes,msgs]=await Promise.all([rpc('get_results',pin),rpc('get_votes',pin),rpc('get_messages',pin)]);
+      store.set('gp-host-pin',pin);
+      $('login').style.display='none';$('panel').style.display='block';$('err').textContent='';
+      let g=0,b=0;res.forEach(x=>{if(x.choice==='girl')g=+x.say;if(x.choice==='boy')b=+x.say;});
+      const t=g+b;
+      $('total').textContent=t?('Cəmi '+t+' səs'):'Hələ səs yoxdur';
+      $('nGirl').textContent=g+(t?' · '+Math.round(g/t*100)+'%':'');
+      $('nBoy').textContent=b+(t?' · '+Math.round(b/t*100)+'%':'');
+      requestAnimationFrame(()=>{$('fGirl').style.width=(t?g/t*100:0)+'%';$('fBoy').style.width=(t?b/t*100:0)+'%';});
+      $('votes').innerHTML=votes.length?votes.map(v=>`<li class="row"><span>${esc(v.name)} <span class="when">${fmt(v.updated_at)}</span></span><span class="tag ${v.choice==='girl'?'girl':'boy'}">${v.choice==='girl'?'Qız':'Oğlan'}</span></li>`).join(''):'<li class="empty">Hələ səs yoxdur</li>';
+      $('msgs').innerHTML=msgs.length?msgs.map(m=>`<li class="msg"><div class="row"><span class="who">${esc(m.name)}</span><span class="when">${fmt(m.created_at)}</span></div><p>${esc(m.body)}</p></li>`).join(''):'<li class="empty">Hələ mesaj yoxdur</li>';
+    }catch(e){
+      $('login').style.display='block';$('panel').style.display='none';
+      $('err').textContent=e.pin?'PIN səhvdir':'Bağlantı xətası, yenidən cəhd edin';
+    }
+  }
+
+  $('go').addEventListener('click',()=>{const p=$('pin').value.trim();if(p)load(p);});
+  $('pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('go').click();});
+  $('refresh').addEventListener('click',()=>{const p=store.get('gp-host-pin');if(p)load(p);});
+  const saved=store.get('gp-host-pin');if(saved){$('pin').value=saved;load(saved);}
+</script>
+</body>
+</html>
